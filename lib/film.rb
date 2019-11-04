@@ -14,6 +14,10 @@ class Film
     @year = year.to_i
   end
 
+  def havnt?
+    false
+  end
+
   def to_s
     "#{director} - #{title} (#{year})"
   end
