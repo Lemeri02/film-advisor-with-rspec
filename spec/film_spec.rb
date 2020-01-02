@@ -4,35 +4,44 @@ RSpec.describe Film do
   before(:all) do
     files = Dir["#{__dir__}/fixtures/*.txt"]
     @films = Film.from_file(files)
+    @titles = @films.map(&:title)
+    @directors = @films.map(&:director)
+    @years = @films.map(&:year)
   end
 
-  context 'Тест чтения из файла' do
-    it 'Должен возвращать объекты класса Array' do
-      expect(@films.map(&:title)).to be_an_instance_of(Array)
-      expect(@films.map(&:director)).to be_an_instance_of(Array)
-      expect(@films.map(&:year)).to be_an_instance_of(Array)
-    end
-
-    it 'Должен возвращать названия фильмов в массиве' do
-      expect(@films.map(&:title)).to eq ['Джокер', 'Побег из Шоушенка']
-    end
-
-    it 'Должен возвращать имена режиссеров в массиве' do
-      expect(@films.map(&:director)).to eq ['Тодд Филлипс', 'Фрэнк Дарабонт']
-    end
-
-    it 'должен возвращать год издания фильмов в массиве' do
-      expect(@films.map(&:year)).to eq [2019, 1994]
+  describe '::from_file' do
+    it 'returns an array' do
+      p @films
+      expect(@films).to be_a(Array)
     end
   end
 
-  context 'Присвоение инстанс-переменных в классе' do
-    it 'Должен возвращать инстанс переменные класса' do
-      @films.each do |film|
-        expect(film.title).to eq('Джокер').or eq('Побег из Шоушенка')
-        expect(film.director).to eq('Тодд Филлипс').or eq('Фрэнк Дарабонт')
-        expect(film.year).to eq(2019).or eq(1994)
+  describe '.new' do
+    it 'is return instance of class Film' do
+      expect(Film.new(@titles[0], @directors[0], @years[0])).to be_an_instance_of(Film)
+    end
+
+    context 'assigns instance variables' do
+      it 'returns movie\'s title in an array' do
+        expect(@titles).to match_array(['Побег из Шоушенка', 'Джокер'])
       end
+
+      it 'returns movie\'s director in an array' do
+        expect(@directors).to match_array(['Тодд Филлипс', 'Фрэнк Дарабонт'])
+      end
+
+      it 'returns movie\'s relise year in an array' do
+        expect(@years).to match_array([1994, 2019])
+      end
+    end
+  end
+
+  describe '#to_s' do
+    it 'converts film info to string' do
+      expect(@films.map(&:to_s)).to match_array(
+        ['Тодд Филлипс - Джокер (2019)',
+         'Фрэнк Дарабонт - Побег из Шоушенка (1994)']
+      )
     end
   end
 end
